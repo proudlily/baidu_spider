@@ -42,26 +42,46 @@
 ## 步骤
 
 ### 1.获取cookie:BAIDUID
+- url:http://www.baidu.com
+- 方法:get
 
 ### 2.获取token
-需要本地生成gid,调用js `src/utils/pswd.js`</br>
-参考代码:
-
+- url:https://passport.baidu.com/v2/api/?getapi&tpl=mn&apiver=v3&tt=" + time + "&class=login&gid=" + Gid + "&logintype=dialogLogin&callback=bd__cbs__bmlhf3"
+- 方法:get </br>
+从页面取出token</br>
+- 参数
+`time`:是只有13位
+`gid`：需要本地生成gid,调用js `src/utils/pswd.js`</br>
+- 参考代码:
 ```js
  guidRandom()
  ```
 ### 3.获取public key
 登录加密的
+- url:  "https://passport.baidu.com/v2/getpublickey" + "?token=" + Token + "&tpl=mn&apiver=v3&tt=" + time+ "&gid=" + Gid + "&callback=bd__cbs__d3en7h"
+- 方法:get </br>
+从页面取出 RSA的 public key 和key</br> 
 
-参考代码:
+- 参考代码:生成RSA加密的密码
 `src/utils/pswd.js`
 ```js
 PasswordEncrypt(pswd, pubkey)
  ```
-### 4.获取CodeString
-获取验证码。我看七夜前辈，有确认验证码是否正确的步骤，我也写了。不知道，有没有用
+### 4.获取验证吗
+- 1.获取CodeString
+- url:  "https://passport.baidu.com/v2/api/?logincheck&` + "?token=" + token + `&tpl=mn&apiver=v3&tt=` + times+ `&sub_source=leadsetpwd&username=...&isphone=false&dv=&callback=bd__cbs__6fq7ta"
+- 方法:get </br>
+- 从页面取出codeString
+- 2.获取图片
+- url:  "`https://passport.baidu.com/v2/api/?logincheck&` + "?token=" + token + `&tpl=mn&apiver=v3&tt=` + time+ `&sub_source=leadsetpwd&username=...&isphone=false&dv=&callback=bd__cbs__6fq7ta`"
+- 方法:get </br>
+
+- 3.获取验证码。
+我看七夜前辈，有确认验证码是否正确的步骤，我也写了。不知道，有没有用
 
 ### 5.post表单
+- url:https://passport.baidu.com/v2/api/?login
+方法:post
 另外，post数据，有固定的，也有变化的，我把变化的拿出来
 ```golang
 postDict["codestring"] = this.CodeString//验证码的url的参数
